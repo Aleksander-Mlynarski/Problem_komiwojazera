@@ -1,5 +1,5 @@
 #include "TSP.hxx"
-
+#include "tsp_setup.hxx"
 #include <algorithm>
 #include <stack>
 #include <optional>
@@ -43,7 +43,11 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
         //uzycie funkcji min_element z biblioteki i przypisanie jej iteratora it, ktory zwraca adres
         // begin() to początek kolumn
         // end() to koniec kolumn
-        cost_t const minimum_liczba = *it; //wyciagniecie wartosci spod adresu
+        cost_t minimum_liczba = *it; //wyciagniecie wartosci spod adresu
+        if (minimum_liczba == INF)
+        {
+            minimum_liczba=0;
+        }
         wynik.push_back(minimum_liczba);//minimum_liczba --> wynik
     }
     return wynik;
@@ -61,7 +65,23 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
  * Reduce rows so that in each row at least one zero value is present.
  * @return Sum of values reduced in rows.
  */
-cost_t CostMatrix::reduce_rows() {
+cost_t CostMatrix::reduce_rows() //ten algorytm cche szukac zer dlatego trzeba mu je dac
+{
+    cost_t guaranteed_cost = 0; //zwraca sume najmniejszych wartosci z kazdego wiersza
+    std::vector<cost_t> minima = get_min_values_in_rows(); //mam wektore minima teraz
+    for (std::size_t c = 0; c < minima.size(); ++c) //przejscie po indeksach tego wektora
+        {
+            if (minima[c] == INF || minima[c] == 0) {
+                continue;
+            }
+            guaranteed_cost += minima[c];
+            for (auto& val : matrix_[c]) {
+                if (val != INF) { // Nie odejmujemy od nieskończoności
+                    val -= minima[c];
+                }
+            }
+        }
+    return guaranteed_cost;
 }
 
 /**
@@ -86,6 +106,10 @@ std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
                 min_val = matrix_[j][i];
             }
         }
+        if (min_val == INF)
+        {
+            min_val = 0;
+        }
         min_values.push_back(min_val);
     }
     return min_values;
@@ -95,10 +119,26 @@ std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
  * Reduces rows so that in each column at least one zero value is present.
  * @return Sum of values reduced in columns.
  */
-cost_t CostMatrix::reduce_cols() {
-    throw;  // TODO: Implement it!
-}
+cost_t CostMatrix::reduce_cols()
+{
+    cost_t guaranteed_cost = 0;
+    std::vector<cost_t> minima = get_min_values_in_cols(); // mam wektor na minimalne wartosci w kulomnach
+    for (size_t i = 0; i < minima.size(); ++i)
+    {
+        if (minima[i] == INF or minima[i] == 0) { continue;}
+        guaranteed_cost += minima[i] ;
 
+        for (size_t j = 0; j < matrix_.size(); ++j) { //musi byc  po wierszach
+            if (matrix_[j][i] != INF)
+            {
+                // Nie odejmujemy od nieskończoności
+                matrix_[j][i] -= minima[i];
+            }
+
+        }
+    }
+    return guaranteed_cost;
+}
 /**
  * Get the cost of not visiting the vertex_t (@see: get_new_vertex())
  * @param row
