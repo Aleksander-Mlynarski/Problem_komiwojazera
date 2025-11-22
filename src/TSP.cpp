@@ -32,6 +32,7 @@ path_t StageState::get_path() {
  */
 std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
     std::vector<cost_t> wynik; //tworzenie wektora wynik
+    wynik.reserve(matrix_.size()); //w celu optymalizacji rezerwuje miejsce na wynik( tyle ile jest mozliwosci)
     for (size_t r = 0; r < matrix_.size(); ++r) //stworzenie pętli indeksowej ( wiersz)
     {
       if (matrix_[r].empty()){ //zabezpieczenie gdyby byl jakis pusty wiersz
@@ -42,7 +43,7 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
         //uzycie funkcji min_element z biblioteki i przypisanie jej iteratora it, ktory zwraca adres
         // begin() to początek kolumn
         // end() to koniec kolumn
-        cost_t minimum_liczba = *it; //wyciagniecie wartosci spod adresu
+        cost_t const minimum_liczba = *it; //wyciagniecie wartosci spod adresu
         wynik.push_back(minimum_liczba);//minimum_liczba --> wynik
     }
     return wynik;
@@ -61,7 +62,6 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
  * @return Sum of values reduced in rows.
  */
 cost_t CostMatrix::reduce_rows() {
-    throw;  // TODO: Implement it!
 }
 
 /**
@@ -70,7 +70,25 @@ cost_t CostMatrix::reduce_rows() {
  */
 std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
     std::vector<cost_t> min_values;
-    throw;  // TODO: Implement it!
+
+    if (matrix_.empty() || matrix_[0].empty()) { //warunek
+        return {};
+    }
+    size_t const liczba_wierszy = matrix_.size();
+    size_t const liczba_kolumn = matrix_[0].size();
+
+    for (size_t i = 0; i < liczba_kolumn; ++i) //stworzenie pętli indeksowej (najpierw kolumny potem wiersze)
+    {
+        cost_t min_val = matrix_[0][i];
+        for (size_t j = 1; j < liczba_wierszy; ++j) {
+
+            if (matrix_[j][i] < min_val) {//i- kolumny czyli macierz jest i x j
+                min_val = matrix_[j][i];
+            }
+        }
+        min_values.push_back(min_val);
+    }
+    return min_values;
 }
 
 /**
