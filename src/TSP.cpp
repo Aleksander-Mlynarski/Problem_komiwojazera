@@ -44,21 +44,18 @@ std::vector<cost_t> CostMatrix::get_min_values_in_rows() const {
         // end() to koniec kolumn
         cost_t minimum_liczba = *it; //wyciagniecie wartosci spod adresu
         wynik.push_back(minimum_liczba);//minimum_liczba --> wynik
-        cost_t min_val = matrix_[r][0];
-    /* inny sposob ( reczny)
-        for (size_t c = 1; c < matrix_[r].size(); ++c) { //kolumna
-            if (matrix_[r][c] < min_val) {
-                min_val = matrix_[r][c];
-            }
-        }
-    */
-        wynik.push_back(min_val);
-
     }
     return wynik;
-
 }
-
+/* inny sposob ( reczny)
+ * cost_t min_val = matrix_[r][0];
+ * for (size_t c = 1; c < matrix_[r].size(); ++c) { //kolumna
+ * if (matrix_[r][c] < min_val) {
+ * min_val = matrix_[r][c];
+ * }
+ * }
+ * wynik.push_back(min_val);
+   */
 /**
  * Reduce rows so that in each row at least one zero value is present.
  * @return Sum of values reduced in rows.
