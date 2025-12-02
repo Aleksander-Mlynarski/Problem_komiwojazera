@@ -96,7 +96,7 @@ std::vector<cost_t> CostMatrix::get_min_values_in_cols() const {
     }
     size_t const liczba_wierszy = matrix_.size();
     size_t const liczba_kolumn = matrix_[0].size();
-
+    min_values.reserve(liczba_kolumn); //alokacja pamieci
     for (size_t i = 0; i < liczba_kolumn; ++i) //stworzenie pętli indeksowej (najpierw kolumny potem wiersze)
     {
         cost_t min_val = matrix_[0][i];
@@ -134,7 +134,6 @@ cost_t CostMatrix::reduce_cols()
                 // Nie odejmujemy od nieskończoności
                 matrix_[j][i] -= minima[i];
             }
-
         }
     }
     return guaranteed_cost;
@@ -146,7 +145,25 @@ cost_t CostMatrix::reduce_cols()
  * @return The sum of minimal values in row and col, excluding the intersection value.
  */
 cost_t CostMatrix::get_vertex_cost(std::size_t row, std::size_t col) const {
-    throw;  // TODO: Implement it!
+    cost_t min_col  = INF;
+    cost_t min_row  = INF;
+
+    for (std::size_t r = 0; r < matrix_.size(); ++r)
+    {
+        if (matrix_[r][col] < min_col && matrix_[r][col] != INF  && r != col)
+        {
+            min_col = matrix_[r][col];
+        }
+    }
+
+    for (std::size_t c = 0; c < matrix_.size(); ++c)
+    {
+        if (matrix_[row][c] < min_col && matrix_[row][c] != INF  && c != col)
+        {
+            min_row = matrix_[row][c];
+        }
+    }
+    return min_col+min_row;
 }
 
 /* PART 2 */
@@ -160,23 +177,53 @@ cost_t CostMatrix::get_vertex_cost(std::size_t row, std::size_t col) const {
  * @return The coordinates of the next vertex.
  */
 NewVertex StageState::choose_new_vertex() {
-    throw;  // TODO: Implement it!
+    cost_t current_value = 0;
+    cost_t maximum = 0;
+    vertex_t choose = {0,0};
+    for (std::size_t r = 0; r < matrix_.size(); ++r)
+    {
+        for (std::size_t c = 0; c < matrix_.size(); ++c)
+        {
+            if (matrix_[r][c] == 0)
+            {
+                current_value =  matrix_.get_vertex_cost(r,c);
+                if (current_value >= maximum)
+                {
+                    maximum = current_value;
+                    choose = {r,c};
+                }
+            }
+        }
+    }
+    return choose;
 }
 
 /**
  * Update the cost matrix with the new vertex.
  * @param new_vertex
  */
-void StageState::update_cost_matrix(vertex_t new_vertex) {
-    throw;  // TODO: Implement it!
+void StageState::update_cost_matrix(vertex_t const new_vertex)
+{
+    for (std::size_t r = 0; r < matrix_.size(); ++r)
+    {
+        matrix_[r][new_vertex.col] = INF;
+    }
+    for (std::size_t c = 0; c < matrix_.size(); ++c)
+    {
+        matrix_[new_vertex.row][c] = INF;
+    }
+    matrix_[new_vertex.col][new_vertex.row] = INF;
 }
+
 
 /**
  * Reduce the cost matrix.
  * @return The sum of reduced values.
  */
 cost_t StageState::reduce_cost_matrix() {
-    throw;  // TODO: Implement it!
+    cost_t const cols = matrix_.reduce_cols();
+    cost_t const rows = matrix_.reduce_rows();
+    return  rows + cols;
 }
 
 /**
