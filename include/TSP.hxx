@@ -74,7 +74,13 @@ public:
     path_t get_path();
     std::size_t get_level() const { return unsorted_path_.size(); }
 
-    void update_lower_bound(cost_t reduced_values) { lower_bound_ += reduced_values; }
+    void update_lower_bound(cost_t reduced_values) {
+        if (lower_bound_ == INF || reduced_values == INF) {
+            lower_bound_ = INF;
+        } else {
+            lower_bound_ += reduced_values;
+        }
+    }
     cost_t get_lower_bound() const { return lower_bound_; }
     void reset_lower_bound() { lower_bound_ = 0; }
 
@@ -94,7 +100,7 @@ private:
 
 //NewVertex choose_new_vertex(const CostMatrix& cm);
 cost_t get_optimal_cost(const path_t& optimal_path, const cost_matrix_t& m);
-StageState create_right_branch_matrix(cost_matrix_t m, vertex_t v, cost_t lb);
+StageState create_right_branch_matrix(CostMatrix m, vertex_t v, cost_t lb, unsorted_path_t p);
 tsp_solutions_t filter_solutions(tsp_solutions_t solutions);
 
 tsp_solutions_t solve_tsp(const cost_matrix_t& cm);

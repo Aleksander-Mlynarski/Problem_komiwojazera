@@ -1,9 +1,8 @@
-#include "TSP.hxx"
+#include "include/TSP.hxx"
 #include <iostream>
 
-
 int main() {
-    cost_matrix_t cm = {{INF, 10, 8,   19, 12},
+    /*cost_matrix_t cm = {{INF, 10, 8,   19, 12},
                       {10, INF, 20,  6,  3},
                       {8,   20, INF, 4,  2},
                       {19,  6,  4, INF,  7},
@@ -12,15 +11,15 @@ int main() {
     // Rozwiązania:
     // 32 : 2 3 4 1 0
     // 32 : 1 4 3 2 0
+    */
 
-
-    //    cost_matrix_t cm {
-    //            {INF, 12,   3,  45,   6},
-    //            {78, INF,  90,  21,   3},
-    //            { 5,  56, INF,  23,  98},
-    //            {12,   6,   8, INF,  34},
-    //            { 3,  98,   3,   2, INF}
-    //    };
+       cost_matrix_t cm {
+                {INF, 12,   3,  45,   6},
+                {78, INF,  90,  21,   3},
+                { 5,  56, INF,  23,  98},
+                {12,   6,   8, INF,  34},
+                { 3,  98,   3,   2, INF}
+       };
 
     // Rozwiązanie:
     // 30 : 4 3 2 0 1
@@ -56,11 +55,9 @@ int main() {
 /*
 // odkomentuj ponizszy kod aby uruchomic testy jednostkowe z tests.cpp
 // jesli chce uruchomic testy, musisz jednoczesnjiej zakomentowac kod powyzej
-#include "gtest/gtest.h"
-
+//#include "gtest/gtest.h"
 int main(int argc, char** argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
-
 */
