@@ -47,21 +47,6 @@ Ze względu na dużą złożoność problemu (rzędu **O(n!)**) rozwiązania dok
 
 ---
 
-## 🧱 Struktura projektu
-
-Przykładowa struktura repozytorium:
-
-```
-.
-├── main.py
-├── tsp.py
-├── utils.py
-└── README.md
-```
-
-*(Struktura może się różnić w zależności od implementacji)*
-
----
 
 ## ▶️ Uruchomienie
 
